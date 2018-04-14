@@ -1,0 +1,13 @@
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\PV178.Homeworks.HW04.Tests.dll
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\PV178.Homeworks.HW04.Tests.pdb
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\PV178.Homeworks.HW04.exe
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\CsvHelper.dll
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\PV178.Homeworks.HW04.pdb
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\PV178.Homeworks.HW04.exe.config
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\CsvHelper.pdb
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\bin\Debug\CsvHelper.xml
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\obj\Debug\PV178.Homeworks.HW04.Tests.csprojResolveAssemblyReference.cache
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\obj\Debug\PV178.Homeworks.HW04.Tests.csproj.CoreCompileInputs.cache
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\obj\Debug\PV178.Homeworks.HW04.Tests.dll
+C:\Users\Filip_000\Desktop\GitLab\shark-attacks\PV178.Homeworks.HW04.Tests\obj\Debug\PV178.Homeworks.HW04.Tests.pdb
