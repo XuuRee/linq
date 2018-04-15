@@ -25,8 +25,8 @@ namespace PV178.Homeworks.HW04
         /// <returns>The query result</returns>
         public List<string> WhiteDeathSurvivorsStartingWithKQuery()
         {
-            var dateFrom = new DateTime(1960, 03, 03, 0, 0, 0);
-            var dateTo = new DateTime(1980, 11, 12, 0, 0, 0);
+            var dateFrom = new DateTime(1960, 03, 03);
+            var dateTo = new DateTime(1980, 11, 12);
 
             /*
             //first version
@@ -90,21 +90,25 @@ namespace PV178.Homeworks.HW04
         /// <returns>The query result</returns>
         public bool AreAllLongSharksGenderIgnoringQuery()
         {
-            // je mozne, ze je treba urcit pro kazdeho zraloka true / false (GroupBy)
-
-            var longSharks = DataContext.SharkSpecies.
-                Where(x => x.Length.CompareTo(2.00) > 0).   // compare double
-                Select(x => x.Id);
-
-            var ret = DataContext.SharkAttacks.
+            // OK
+            var areAllLongSharksGenderIgnoring = DataContext.SharkSpecies.
+                Where(x => x.Length.CompareTo(2.00) > 0).
+                Join(DataContext.SharkAttacks,
+                    ss_id => ss_id.Id,
+                    sa_id => sa_id.SharkSpeciesId,
+                    (ss_id, sa_id) => new {
+                        attackedPersonId = sa_id.AttackedPersonId
+                    }).
                 Join(DataContext.AttackedPeople,
-                    sa_id => sa_id.AttackedPersonId,
+                    sa_id => sa_id.attackedPersonId,
                     ap_id => ap_id.Id,
-                    (sa_id, ap_id) => new { sa_id.SharkSpeciesId, ap_id.Sex }
-                ).
-                Where(x => longSharks.Contains(x.SharkSpeciesId) && x.Sex != Sex.Unknown);
+                    (sa_id, ap_id) => new {
+                        sex = ap_id.Sex
+                }).
+                Where(x => x.sex != Sex.Unknown).
+                All(x => !(x.sex == Sex.Male || x.sex == Sex.Female));
 
-            return !(ret.All(x => x.Sex == Sex.Female) || ret.All(x => x.Sex == Sex.Male)); 
+            return areAllLongSharksGenderIgnoring;
         }
 
         /// <summary>
@@ -135,6 +139,7 @@ namespace PV178.Homeworks.HW04
                 }).
                 OrderByDescending(x => x.countries).
                 ToDictionary(t => t.name, t => t.countries);
+
             return sharksWithoutNicknameAttacks;
         }
 
@@ -165,6 +170,7 @@ namespace PV178.Homeworks.HW04
                 OrderByDescending(x => x.victims).
                 Take(5).
                 ToDictionary(t => t.name, t => t.victims);
+
             return fiveSharkSpeciesWithMostFatalities;
         }
 
@@ -282,7 +288,7 @@ namespace PV178.Homeworks.HW04
         /// <returns>The query result</returns>
         public List<Tuple<string, List<SharkSpecies>>> LightestSharksInSouthAmericaQuery()
         {
-            // NOK
+            // OK
             var tenLightestSharks = DataContext.SharkSpecies.
                 OrderBy(s => s.Weight).
                 Take(10);
@@ -327,22 +333,23 @@ namespace PV178.Homeworks.HW04
         /// <returns>The query result</returns>
         public Dictionary<int, string> FastestSharksQuery()
         {
-            var fastSharks = DataContext.SharkSpecies.
+            // OK
+            var fastestSharks = DataContext.SharkSpecies.
                 Where(x => x.TopSpeed > 56).
                 GroupJoin(DataContext.SharkAttacks,
                     ss_id => ss_id.Id,
                     sa_id => sa_id.SharkSpeciesId,
-                    (ss_id, sa_id) => new
-                    {
+                    (ss_id, sa_id) => new {
                         ss_id,
                         ssa_id = sa_id.
                         Where(x => x.Activity.ToLower().Contains("swimming") && x.AttackedPersonId.HasValue)
                         .Join(DataContext.AttackedPeople,
                             v_id => v_id.AttackedPersonId,
                             ap_id => ap_id.Id,
-                            (v_id, ap_id) => new { ap_id })
-                    }
-                ).
+                            (v_id, ap_id) => new {
+                                ap_id
+                        })
+                }).
                 OrderByDescending(x => x.ss_id.TopSpeed).
                 ThenByDescending(x => x.ssa_id.Count()).
                 ToDictionary(t =>
@@ -356,7 +363,8 @@ namespace PV178.Homeworks.HW04
                             return c;
                         })
                 );
-            return fastSharks;
+
+            return fastestSharks;
         }
 
         /// <summary>
@@ -371,12 +379,15 @@ namespace PV178.Homeworks.HW04
         /// <returns>The query result</returns>
         public Dictionary<string, Tuple<int, double>> ContinentInfoAboutSurfersQuery()
         {
+            // OK
             var continentInfoAboutSurfers = DataContext.Countries.
                 Join(DataContext.SharkAttacks,
                     c_id => c_id.Id,
                     sa_id => sa_id.CountryId,
-                    (c_id, sa_id) => new { c_id, sa_id }
-                ).
+                    (c_id, sa_id) => new {
+                        c_id,
+                        sa_id
+                }).
                 Where(x => x.sa_id.Activity.ToLower().Contains("surf") && x.sa_id.AttackSeverenity == AttackSeverenity.Fatal).
                 Join(DataContext.AttackedPeople,
                     sa_id => sa_id.sa_id.AttackedPersonId,
@@ -384,7 +395,7 @@ namespace PV178.Homeworks.HW04
                     (sa_id, ap_id) => new {
                         continents = sa_id.c_id.Continent,
                         ages = ap_id.Age
-                    }).
+                }).
                 GroupBy(x => x.continents).
                 Select(x => new {
                     ids = x.Key,
@@ -410,6 +421,7 @@ namespace PV178.Homeworks.HW04
         /// <returns>The query result</returns>
         public IDictionary<string, int> TopThreeCountriesByPopulationIncreaseQuery()
         {
+            //OK
             /* 
             //version without zip
             var topThreeCountriesByPopulation = DataContext.Countries.
@@ -455,18 +467,23 @@ namespace PV178.Homeworks.HW04
         /// <returns>The query result</returns>
         public List<string> InfoAboutPeopleThatNamesStartsWithCAndWasInBahamasQuery()
         {
+            // OK
             var infoAboutPeople = DataContext.Countries.
                 Where(x => x.Name.Equals("Bahamas")).
                 Join(DataContext.SharkAttacks,
                     c_id => c_id.Id,
                     sa_id => sa_id.CountryId,
-                    (c_id, sa_id) => new { sa_id.AttackedPersonId, sa_id.SharkSpeciesId }
-                ).
+                    (c_id, sa_id) => new {
+                        sa_id.AttackedPersonId,
+                        sa_id.SharkSpeciesId
+                }).
                 Join(DataContext.AttackedPeople,
                     v_id => v_id.AttackedPersonId,
                     ap_id => ap_id.Id,
-                    (v_id, ap_id) => new { ap_id.Name, v_id.SharkSpeciesId }
-                ).
+                    (v_id, ap_id) => new {
+                        ap_id.Name,
+                        v_id.SharkSpeciesId
+                }).
                 Where(x => x.Name.StartsWith("C")).
                 Join(DataContext.SharkSpecies,
                     v_id => v_id.SharkSpeciesId,
@@ -477,6 +494,7 @@ namespace PV178.Homeworks.HW04
                 ).
                 Select(x => (string) x.item).
                 ToList();
+
             return infoAboutPeople;
         }
 
